@@ -25,4 +25,16 @@ const addGroup = asyncHandler (async(req, res) => {
 });
 
 
-module.exports = {getGroups, addGroup}
+
+const deleteGroup = asyncHandler(async(req, res) => {
+    const foundGroup = await Group.findByIdAndDelete (req.params.id);
+
+    if (!foundGroup){
+        res.status(404).json({message:"Group does not exists"});
+        throw new Error("This group does not exist")
+    }
+
+    res.status(200).json(foundGroup);
+});
+
+module.exports = {getGroups, addGroup, deleteGroup}
