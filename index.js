@@ -8,7 +8,10 @@ const PORT = process.env.PORT;
 dbConnection();
 
 app.use(express.json());
+
 app.use("/api/v1/groups", require("./routes/groupRoutes"));
+app.use("/api/v1/tasks", require("./routes/taskRoutes"));
+
 app.use(require("./middleware/errorHandling"));
 
 app.listen(PORT, (req, res) => {

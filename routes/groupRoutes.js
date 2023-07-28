@@ -1,6 +1,6 @@
 const express = require("express");
 const groupRoutes = express.Router();
-const {getGroups, addGroup, deleteGroup} = require ("../controllers/groupController");
+const {getGroups, addGroup, deleteGroup, addTask} = require ("../controllers/groupController");
 
 groupRoutes.route("/")
     .get(getGroups)
@@ -8,5 +8,8 @@ groupRoutes.route("/")
 
 groupRoutes.route("/:id")
     .delete(deleteGroup);
+
+groupRoutes.route("/:id/tasks")
+    .post(addTask);
 
 module.exports = groupRoutes;
