@@ -1,12 +1,22 @@
 const asyncHandler = require("express-async-handler");
 const Group = require("../models/groupModel");
 const Task = require("../models/taskModel");
+const User = require("../models/userModel");
 
 // Get all groups ---------------------------------------------------------------
 const getGroups = asyncHandler( async ( req, res) => {
-    const groups = await Group.find().populate("tasks");
+    const groups = await Group.find().populate("tasks").populate("users");
     res.status(200).json(groups);
 });
+
+const getGroupById = asyncHandler( async(req, res) => {
+    const foundGroup = await Group.findById(req.params.id).populate("tasks");
+    if (!foundGroup){
+        res.status(404);
+        throw new Error("Group does not exist");
+    }
+    res.status(200).json(foundGroup);
+})
 
 //Create new group -------------------------------------------------------------
 const addGroup = asyncHandler (async(req, res) => {
@@ -62,7 +72,39 @@ const addTask = asyncHandler (async (req, res) => {
         tasks:group.tasks
     });
 
-    res.status(201).json(updatedGroup);
+    res.status(201).json(await Group.findById(req.params.id).populate("tasks").populate("users"));
 });
 
-module.exports = { getGroups, addGroup, deleteGroup, addTask }
+const addUserToGroup = asyncHandler (async(req, res) => {
+    const foundGroup = await Group.findById(req.params.id);
+    if (!foundGroup){
+        res.status(404);
+        throw new Error("This group does not exist!");
+    }
+    const{userId} = req.body;
+    const foundUser = await User.findById(userId);
+    if (!userId){
+        res.status(404);
+        throw new Error("this user does not exist!");
+    }
+
+    if (foundGroup.users.includes(foundUser._id)){
+        res.status(404);
+        throw new Error("This user is already included in this group!");
+    }
+
+    foundGroup.users.push(foundUser);
+    foundUser.groups.push(foundGroup);
+
+    await Group.findByIdAndUpdate(foundGroup.id, {
+        users:foundGroup.users
+    })
+
+    await User.findByIdAndUpdate(foundUser.id, {
+        groups:foundUser.groups
+    });
+
+    res.status(200).json(await Group.findById(req.params.id).populate("users").populate("tasks"));
+});
+
+module.exports = { getGroups, getGroupById, addGroup, deleteGroup, addTask, addUserToGroup }

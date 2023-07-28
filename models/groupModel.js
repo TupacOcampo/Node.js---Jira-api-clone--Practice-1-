@@ -12,6 +12,10 @@ const groupScheema = mongoose.Schema({
     tasks:[{
         type: mongoose.Types.ObjectId,
         ref: "Task"
+    }],
+    users:[{
+        type:mongoose.Types.ObjectId,
+        ref:"User"
     }]
     
 },{timeStamp:true});

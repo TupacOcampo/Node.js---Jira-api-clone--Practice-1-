@@ -11,6 +11,7 @@ app.use(express.json());
 
 app.use("/api/v1/groups", require("./routes/groupRoutes"));
 app.use("/api/v1/tasks", require("./routes/taskRoutes"));
+app.use("/api/v1/users", require("./routes/userRoutes"));
 
 app.use(require("./middleware/errorHandling"));
 

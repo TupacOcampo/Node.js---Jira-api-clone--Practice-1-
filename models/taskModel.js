@@ -12,8 +12,11 @@ const taskScheema = mongoose.Schema({
     group:{
         type:mongoose.Types.ObjectId,
         ref:"Group"
+    },
+    user:{
+        type:mongoose.Types.ObjectId,
+        ref:"User"
     }
-
 }, {timeStamp: true});
 
 module.exports = mongoose.model("Task", taskScheema);

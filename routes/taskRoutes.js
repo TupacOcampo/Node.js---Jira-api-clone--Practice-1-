@@ -1,12 +1,13 @@
 const express = require ("express");
 const taskRouter = express.Router();
-const {getAllTasks, createNewTask, deleteTask } = require("../controllers/taskController")
+const {getAllTasks, getTaskById, deleteTask, assignTaskToUser } = require("../controllers/taskController")
 
 taskRouter.route("/")
     .get(getAllTasks)
-    .post(createNewTask);
 
 taskRouter.route("/:id")
+    .get(getTaskById)
+    .post(assignTaskToUser)
     .delete(deleteTask);
 
 module.exports = taskRouter;

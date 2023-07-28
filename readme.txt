@@ -13,9 +13,17 @@ Description:
     -Assign specific users to specific tasks
 
 Endpoints:
+Users:
+    -GET - Get all users
+        /api/v1/users
+    -GET - Get specific user by id
+        /api/v1/users/:id
+
 Groups:
     -GET - get all groups
         /api/v1/groups
+    -GET - get specific group by id
+        /api/v1/groups/:id
     -POST - create new group
         /api/v1/groups
     -DELETE - delete specific group
@@ -26,5 +34,9 @@ Groups:
 Tasks:
     -GET - get all tasks
         /api/v1/tasks
+    -GET - get specific task by id
+        /api/v1/tasks/:id
+    -POST - add User to task
+        /api/v1/tasks/:id
     -DELETE - delete specific task
         /api/v1/tasks/:id
