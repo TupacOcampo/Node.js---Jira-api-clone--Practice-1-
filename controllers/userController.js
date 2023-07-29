@@ -1,6 +1,10 @@
 const asyncHandler = require ("express-async-handler");
 const User = require("../models/userModel");
-const bvrypt = require("bcryptjs");
+const bvrypt = require("bcrypt");
+const createJWT = require("../services/encryption")
+
+//Test methods - Get all user info
+//Public access just for practice
 
 const getAllUsers = asyncHandler(async(req, res) => {
     const users = await User.find().populate(["groups", "tasks"]);
@@ -35,4 +39,33 @@ const deleteUserById = asyncHandler( async(req, res) => {
     res.status(200).json({"message":"User deleted"})
 });
 
-module.exports = { getAllUsers, getUserById, createNewUser, deleteUserById };
+const login = asyncHandler ( async (req, res) => {
+    const {email, password} = req.body;
+
+    if (!email, !password){
+        res.status(404);
+        throw new Error("All fields are mandatory!");
+    }
+
+    const foundUser = await User.findOne({email:email})
+    if (!foundUser){
+        res.status(404);
+        throw new Error ("This email does not exist!");
+    }
+
+    if (!await bvrypt.compare(password, foundUser.password)){
+        res.status(500);
+        throw new Error("Incorrect password!");
+    }
+    
+    const accessToken = createJWT({
+        user:{
+            userName: foundUser.User,
+            email:foundUser.email
+        },
+    });
+
+    res.status(200).json({"AccessToken":`${accessToken}`}); 
+});
+
+module.exports = { login, getAllUsers, getUserById, createNewUser, deleteUserById };
